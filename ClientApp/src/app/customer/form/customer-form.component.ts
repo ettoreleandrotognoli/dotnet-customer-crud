@@ -1,14 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { Customer } from '..';
 import { CustomerFormService } from './customer-form.service';
 
 
 @Component({
   selector: 'app-customer-form',
   template: `
-   <form [formGroup]="formGroup">
-    <div class="form-row">
+    <div [formGroup]="formGroup" class="form-row">
       <div class="form-group col-md-8">
         <label for="{{prefix}}name"> Name:</label>
         <input id="{{prefix}}name" class="form-control" type="text" formControlName="name" required>
@@ -43,17 +41,14 @@ import { CustomerFormService } from './customer-form.service';
           <app-customer-address-form prefix="addresses-{{i}}-" [formGroupName]="i" [formGroup]="addressFormGroup" ></app-customer-address-form>
         </div>
       </div>
-    </div>
-  </form>`
+    </div>`
 })
-export class CustomerFormComponent implements OnInit{
+export class CustomerFormComponent {
 
   @Input()
   public prefix = '';
 
   @Input()
-  public customer: Partial<Customer>;
-
   public formGroup: FormGroup;
 
   constructor(
@@ -73,11 +68,5 @@ export class CustomerFormComponent implements OnInit{
   get addresses(): FormArray {
     return this.formGroup.get('addresses') as FormArray;
   }
-
-
-  ngOnInit( ){
-    this.formGroup = this.formService.customerForm(this.customer);
-  }
-
 
 }
