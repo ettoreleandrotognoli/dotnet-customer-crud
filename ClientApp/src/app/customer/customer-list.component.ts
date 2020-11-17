@@ -4,7 +4,7 @@ import { CustomerService, CUSTOMER_SERVICE, Customer } from '.';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-fetch-data',
+  selector: 'app-customer-list',
   template: `
     <h1 id="tableLabel"> Customer List </h1>
 
@@ -12,10 +12,26 @@ import { Observable } from 'rxjs';
       <table class='table table-striped' aria-labelledby="tableLabel">
         <thead>
           <tr>
+            <th>Name </th>
+            <th>Birthday </th>
+            <th>Phones </th>
+            <th>Addresses </th>
+            <th>Sites </th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let customer of customers">
+              <td> {{ customer.name }}</td>
+              <td> {{ customer.birthday }}</td>
+              <td> {{ customer.phones }}</td>
+              <td> {{ customer.addresses }}</td>
+              <td> {{ customer.sites }}</td>
+              <td>
+                <a class="nav-link text-dark" [routerLink]="['/customer', customer.id ]">
+                  Customer
+                </a>
+              </td>
           </tr>
         </tbody>
       </table>

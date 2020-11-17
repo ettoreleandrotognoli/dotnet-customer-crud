@@ -26,8 +26,11 @@ import { CustomerListComponent } from './customer/customer-list.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'customer', component: CustomerListComponent },
-    ])
+      ...CustomerModule.routes(),
+    ], {
+      useHash: true,
+      onSameUrlNavigation: 'reload',
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

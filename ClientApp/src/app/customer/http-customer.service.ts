@@ -17,4 +17,8 @@ export class HttpCustomerService implements CustomerService {
     return EMPTY;
   }
 
+  public get(id: string): Observable<Customer> {
+    return EMPTY;
+  }
+
 }
