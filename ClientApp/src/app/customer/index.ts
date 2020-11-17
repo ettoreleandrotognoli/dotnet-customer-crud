@@ -12,7 +12,7 @@ export const DEFAULT_CUSTOMER_MODULE_OPTIONS: CustomerModuleOptions = {
 
 export interface Address {
   name: string;
-  postalCode: string;
+  zipCode: string;
   street: string;
   number: string;
 }
@@ -29,6 +29,8 @@ export interface Site {
 export interface Customer {
   id: string;
   name: string;
+  cpf: string;
+  rg: string;
   birthday: string;
   addresses: Address[];
   phones: Phone[];
