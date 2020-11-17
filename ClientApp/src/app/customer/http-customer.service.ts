@@ -21,4 +21,13 @@ export class HttpCustomerService implements CustomerService {
     return EMPTY;
   }
 
+
+  public save(customer: Partial<Customer>): Observable<Customer> {
+    return EMPTY;
+  }
+
+  public remove(customer: { id: string }): Observable<void> {
+    return EMPTY;
+  }
+
 }

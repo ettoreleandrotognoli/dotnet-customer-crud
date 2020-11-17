@@ -59,7 +59,8 @@ export class CustomerModule {
   public static routes(): Routes {
     return  [
       { path: 'customer', component: CustomerListComponent },
-      { path: 'customer/:id', component: CustomerDetailComponent },
+      { path: 'customer/new', component: CustomerDetailComponent },
+      { path: 'customer/edit/:id', component: CustomerDetailComponent },
     ];
   }
 

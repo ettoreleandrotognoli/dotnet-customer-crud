@@ -39,6 +39,8 @@ export interface Customer {
 
 export interface CustomerService {
   get(id: string): Observable<Customer>;
+  save(customer: Partial<Customer>): Observable<Customer>;
+  remove(customer: { id: string}): Observable<void>;
   listAll(): Observable<Customer[]>;
 }
 

@@ -37,6 +37,7 @@ export class CustomerFormService {
 
   public customerForm(initialData: Partial<Customer> = {}): FormGroup {
     return this.formBuilder.group({
+      id: initialData.id,
       name: [initialData.name, [ ]],
       birthday: initialData.birthday,
       cpf: initialData.cpf,

@@ -28,7 +28,7 @@ import { Observable } from 'rxjs';
               <td> {{ customer.addresses }}</td>
               <td> {{ customer.sites }}</td>
               <td>
-                <a class="nav-link text-dark" [routerLink]="['/customer', customer.id ]">
+                <a class="nav-link text-dark" [routerLink]="['/customer/edit', customer.id ]">
                   Customer
                 </a>
               </td>
