@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Address, Customer, Phone, Site } from '.';
+import { Address, Customer, Phone, Site } from '..';
 
 
 @Injectable()
