@@ -1,4 +1,5 @@
 using CustomerApp.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,13 @@ namespace CustomerApp.Services
             _Customers.Find(Customer => true).ToList();
 
 
-        public Page<Customer> Page(int offset, int limit)
+        public Page<Customer> Page(int offset, int limit, string q)
         {
-            var query = _Customers.Find(Customer => true);
+            var filter = Builders<Customer>.Filter.Regex("Name", new BsonRegularExpression(q, "gi"));
+            var query = _Customers.Find(filter);
             var total = query.CountDocuments();
             var items = query.Skip(offset).Limit(limit).ToList();
-            return new Page<Customer>{ Total = total, Items = items};
+            return new Page<Customer> { Total = total, Items = items };
         }
 
         public Customer Get(string id) =>
