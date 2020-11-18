@@ -13,8 +13,10 @@ import { FormGroup } from '@angular/forms';
       <h1> Customer {{ customer.name }} </h1>
       <form [formGroup]="customerForm" (ngSubmit)="save()">
         <app-customer-form [formGroup]="customerForm"></app-customer-form>
-        <button type="button" *ngIf="id" (click)="remove()" class="btn btn-danger">Remove</button>
-        <button type="submit" class="btn btn-success">Save</button>
+        <div class="float-right">
+          <button type="button" *ngIf="id" (click)="remove()" class="btn btn-danger">Remove</button>
+          <button type="submit" class="btn btn-success">Save</button>
+        </div>
       </form>
     </div>
     <ng-template #loading>
@@ -79,7 +81,7 @@ export class CustomerDetailComponent implements OnInit {
     this.customer$ = this.route.params.pipe(
       map(params => params['id'] || this.id),
       tap(id => this.id = id),
-      mergeMap(id => (id ? this.service.get(id) : of({}))),
+      mergeMap(id => (id ? this.service.get(id) : this.route.params)),
       tap(customer => this.customerForm = this.formService.customerForm(customer)),
     );
   }
