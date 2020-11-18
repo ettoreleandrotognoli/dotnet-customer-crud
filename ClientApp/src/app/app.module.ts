@@ -9,7 +9,6 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { CustomerModule } from './customer/customer.module';
-import { CustomerListComponent } from './customer/customer-list.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +21,7 @@ import { CustomerListComponent } from './customer/customer-list.component';
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    CustomerModule.forRoot({}),
+    CustomerModule.forRoot({ resourceUrl: '/customer' }),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'fetch-data', component: FetchDataComponent },

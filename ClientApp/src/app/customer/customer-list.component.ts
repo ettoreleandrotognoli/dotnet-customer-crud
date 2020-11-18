@@ -1,9 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { CustomerService, CUSTOMER_SERVICE, Customer } from '.';
+import { CustomerService, CUSTOMER_SERVICE, Customer, Page, Pagination, Search } from '.';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { interval, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
 import { debounce, tap, map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageItem, PaginationModel } from './pagination';
 
 @Component({
   selector: 'app-customer-list',
@@ -30,7 +31,8 @@ import { ActivatedRoute, Router } from '@angular/router';
         </div>
       </div>
     </div>
-    <div *ngIf="customers$ | async as customers; else loading">
+    <div *ngIf="customerPage$ | async as customerPage; else loading">
+      <app-pagination [model]="paginationModel" [queryParamsFactory]="paginateParams()" [totalItems]="customerPage.total"></app-pagination>
       <table class='table table-striped' aria-labelledby="tableLabel">
         <thead>
           <tr>
@@ -45,7 +47,7 @@ import { ActivatedRoute, Router } from '@angular/router';
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let customer of customers">
+          <tr *ngFor="let customer of customerPage.items">
               <td> {{ customer.name }}</td>
               <td> {{ customer.rg }}</td>
               <td> {{ customer.cpf }}</td>
@@ -61,6 +63,7 @@ import { ActivatedRoute, Router } from '@angular/router';
           </tr>
         </tbody>
       </table>
+      <app-pagination [model]="paginationModel" [queryParamsFactory]="paginateParams()"  [totalItems]="customerPage.total"></app-pagination>
     </div>
 
     <ng-template #loading>
@@ -75,14 +78,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class CustomerListComponent implements OnInit, OnDestroy {
 
-  public customers$: Observable<Customer[]>;
+  public customerPage$: Observable<Page<Customer>>;
   public addIcon = faPlus;
   public searchIcon = faSearch;
 
+  public paginationModel: PaginationModel = new PaginationModel(10);
 
   protected searchSubject: Subject<string> = new ReplaySubject(1);
 
   private subscription: Subscription;
+  public pageParamName = 'page';
   public searchParamName = 'q';
   public searchString = '';
 
@@ -96,7 +101,7 @@ export class CustomerListComponent implements OnInit, OnDestroy {
     this.searchSubject.asObservable().pipe(
       debounce(() => interval(250)),
     ).subscribe(
-      it => this.router.navigate([], { queryParams: { [this.searchParamName]: it } })
+      it => this.patchQueryParams({ [this.searchParamName]: it })
     );
   }
 
@@ -106,14 +111,42 @@ export class CustomerListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.route.queryParams.pipe(
-      map(queryParams => queryParams[this.searchParamName] || ''),
-      tap(searchString => this.searchString = searchString),
-      tap(searchString => this.customers$ = this.service.listAll()),
+      tap(queryParams => this.parseQueryParams(queryParams)),
+      map(queryParams => this.serviceParams(queryParams)),
+      tap(serviceParams => this.customerPage$ = this.service.searchPage(serviceParams)),
     ).subscribe();
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  parseQueryParams(queryParams: any) {
+    this.paginationModel.page = parseInt(queryParams[this.pageParamName] || '1', 10);
+    this.searchString = queryParams[this.searchParamName] || '';
+  }
+
+  patchQueryParams(queryParams: any) {
+    const finalQueryParams = this.mergeQueryParams(queryParams);
+    this.router.navigate([], { queryParams: finalQueryParams });
+  }
+
+  serviceParams(queryParams: any): Partial<Pagination & Search> {
+    return {
+      q: queryParams[this.searchParamName] || '',
+      limit: this.paginationModel.pageSize,
+      offset: this.paginationModel.getOffset(),
+    };
+  }
+
+  mergeQueryParams(queryParams: any) {
+    return { ...this.route.snapshot.queryParams, ...queryParams };
+  }
+
+  paginateParams() {
+    return (pageItem: PageItem) => {
+      return this.mergeQueryParams({ [this.pageParamName]: pageItem.number });
+    };
   }
 
 }

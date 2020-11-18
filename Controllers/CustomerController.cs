@@ -22,8 +22,8 @@ namespace CustomerApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Page<Customer>> Get(int offset = 0, int limit = 10, string q = ".*") =>
-            _customerService.Page(offset, limit, q);
+        public ActionResult<Page<Customer>> Get(int offset = 0, int limit = 10, string q = null) =>
+            _customerService.Page(offset, limit, q ?? ".*");
 
         [HttpGet("{id:length(24)}", Name = "GetCustomer")]
         public ActionResult<Customer> Get(string id)

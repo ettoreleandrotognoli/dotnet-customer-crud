@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { defer, from, Observable, of } from 'rxjs';
 import { delay, filter } from 'rxjs/operators';
-import { CustomerService, Customer, Phone, Address, Site } from '.';
+import { CustomerService, Customer, Phone, Address, Site, Pagination, Search, Page } from '.';
 import * as faker from 'faker';
 import * as _ from 'lodash';
 import { fake } from 'faker';
@@ -17,12 +17,12 @@ export class MockCustomerService implements CustomerService {
     }
   }
 
-  public listAll(): Observable<Customer[]> {
-    return of(this.customerList).pipe(delay(500));
+  public searchPage(args: Partial<Pagination & Search> = {}): Observable<Page<Customer>> {
+    return of({ total: this.customerList.length, items: this.customerList }).pipe(delay(500));
   }
 
   public save(customer: Partial<Customer>): Observable<Customer> {
-    return defer( () => {
+    return defer(() => {
       if (customer.id === null || customer.id === undefined) {
         customer.id = `${faker.random.number()}`;
         this.customerList.push(customer as Customer);
@@ -41,7 +41,7 @@ export class MockCustomerService implements CustomerService {
   }
 
   public remove(customer: { id: string }) {
-    return defer( () => {
+    return defer(() => {
       const listIndex = this.customerList.findIndex(it => it.id === customer.id);
       this.customerList.splice(listIndex, 1);
     });

@@ -26,6 +26,20 @@ export interface Site {
   url: string;
 }
 
+export interface Pagination {
+  offset: number;
+  limit: number;
+}
+
+export interface Search {
+  q: string;
+}
+
+export interface Page<T> {
+  items: T[];
+  total: number;
+}
+
 export interface Customer {
   id: string;
   name: string;
@@ -40,9 +54,10 @@ export interface Customer {
 export interface CustomerService {
   get(id: string): Observable<Customer>;
   save(customer: Partial<Customer>): Observable<Customer>;
-  remove(customer: { id: string}): Observable<void>;
-  listAll(): Observable<Customer[]>;
+  remove(customer: { id: string }): Observable<void>;
+  searchPage(params?: Partial<Pagination & Search>): Observable<Page<Customer>>;
 }
 
+export const CUSTOMER_MODULE_OPTIONS = new InjectionToken<CustomerModuleOptions>('CustomerModuleOptions');
 export const CUSTOMER_RESOURCE_URL = new InjectionToken<string>('CustomerResourceUrl');
 export const CUSTOMER_SERVICE = new InjectionToken<CustomerService>('CustomerService');
