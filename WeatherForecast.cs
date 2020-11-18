@@ -1,6 +1,6 @@
 using System;
 
-namespace Customer
+namespace CustomerApp
 {
     public class WeatherForecast
     {
