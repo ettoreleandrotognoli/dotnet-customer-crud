@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { CustomerService, CUSTOMER_SERVICE, Customer } from '.';
-import { Observable, of } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { defer, Observable, of } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { CustomerFormService } from './form/customer-form.service';
 import { FormGroup } from '@angular/forms';
@@ -10,14 +10,20 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-customer-detail',
   template: `
     <div *ngIf="customer$ | async as customer; else loading">
-      <h1> Customer ({{customer.id}}) {{ customer.name }} </h1>
+      <h1> Customer {{ customer.name }} </h1>
       <form [formGroup]="customerForm" (ngSubmit)="save()">
         <app-customer-form [formGroup]="customerForm"></app-customer-form>
         <button type="button" *ngIf="id" (click)="remove()" class="btn btn-danger">Remove</button>
         <button type="submit" class="btn btn-success">Save</button>
       </form>
     </div>
-    <ng-template #loading><em>Loading...</em></ng-template>
+    <ng-template #loading>
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    </ng-template>
   `
 })
 export class CustomerDetailComponent implements OnInit {
@@ -29,10 +35,14 @@ export class CustomerDetailComponent implements OnInit {
 
   public customerForm: FormGroup;
 
+  @Input()
+  public successRoute: any[] = ['/customer/'];
+
   constructor(
     @Inject(CUSTOMER_SERVICE)
     private service: CustomerService,
     private formService: CustomerFormService,
+    private router: Router,
     @Optional()
     private route?: ActivatedRoute,
   ) {
@@ -43,13 +53,26 @@ export class CustomerDetailComponent implements OnInit {
     return this.customerForm.value;
   }
 
+  public loading<T>(): (source: Observable<T>) => Observable<Partial<Customer>> {
+    return (source: Observable<T>): Observable<Partial<Customer>> => {
+      return source.pipe(
+        tap(() => { }, console.error, () => this.router.navigate(this.successRoute)),
+        map(() => this.getCustomer()),
+      );
+    };
+  }
+
   public save() {
     const customer = this.getCustomer();
-    this.service.save(customer).subscribe();
+    this.customer$ = this.service.save(customer).pipe(
+      this.loading(),
+    );
   }
 
   public remove() {
-    this.service.remove({ id: this.id }).subscribe();
+    this.customer$ = this.service.remove({ id: this.id }).pipe(
+      this.loading(),
+    );
   }
 
   public ngOnInit() {

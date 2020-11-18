@@ -1,4 +1,5 @@
 import { ReactiveFormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { NgModule } from '@angular/core';
@@ -33,6 +34,7 @@ const COMPONENTS = [
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
+    FontAwesomeModule,
   ],
   exports: [
     ...COMPONENTS
@@ -43,8 +45,8 @@ const COMPONENTS = [
 })
 export class CustomerModule {
 
-  public static forRoot(options:  Partial<CustomerModuleOptions>): ModuleWithProviders {
-    const finalOptions = {...DEFAULT_CUSTOMER_MODULE_OPTIONS , ...options};
+  public static forRoot(options: Partial<CustomerModuleOptions>): ModuleWithProviders {
+    const finalOptions = { ...DEFAULT_CUSTOMER_MODULE_OPTIONS, ...options };
     return {
       ngModule: CustomerModule,
       providers: [
@@ -57,7 +59,7 @@ export class CustomerModule {
   }
 
   public static routes(): Routes {
-    return  [
+    return [
       { path: 'customer', component: CustomerListComponent },
       { path: 'customer/new', component: CustomerDetailComponent },
       { path: 'customer/edit/:id', component: CustomerDetailComponent },

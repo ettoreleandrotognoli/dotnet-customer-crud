@@ -7,7 +7,12 @@ import { FormGroup } from '@angular/forms';
   <div class='form-row' [formGroup]='formGroup'>
     <div class='form-group col-md-6'>
       <label for="{{prefix}}street"> Street: </label>
-      <input id="{{prefix}}street" class='form-control' formControlName='street' type='text' >
+      <div class="input-group">
+          <div class="input-group-prepend">
+            <ng-content></ng-content>
+          </div>
+          <input id="{{prefix}}street" class='form-control' formControlName='street' type='text' >
+      </div>
     </div>
     <div class='form-group col-md-2'>
       <label for="{{prefix}}number"> Number: </label>
