@@ -33,6 +33,7 @@ import { PageItem, PaginationModel } from './pagination';
     </div>
     <div *ngIf="customerPage$ | async as customerPage; else loading">
       <app-pagination [model]="paginationModel" [queryParamsFactory]="paginateParams()" [totalItems]="customerPage.total"></app-pagination>
+      <div class="table-responsive-md">
       <table class='table table-striped' aria-labelledby="tableLabel">
         <thead>
           <tr>
@@ -89,6 +90,7 @@ import { PageItem, PaginationModel } from './pagination';
           </tr>
         </tbody>
       </table>
+      </div>
       <app-pagination [model]="paginationModel" [queryParamsFactory]="paginateParams()"  [totalItems]="customerPage.total"></app-pagination>
     </div>
 
