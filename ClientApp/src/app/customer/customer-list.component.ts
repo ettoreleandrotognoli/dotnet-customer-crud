@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CustomerService, CUSTOMER_SERVICE, Customer, Page, Pagination, Search } from '.';
-import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch, faPen, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { interval, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
 import { debounce, tap, map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -51,9 +51,26 @@ import { PageItem, PaginationModel } from './pagination';
               <td> {{ customer.name }}</td>
               <td> {{ customer.rg }}</td>
               <td> {{ customer.cpf }}</td>
-              <td> {{ customer.birthday }}</td>
-              <td> {{ customer.phones }}</td>
-              <td> {{ customer.addresses }}</td>
+              <td> {{ customer.birthday | date }}</td>
+              <td>
+                <ng-container *ngFor="let phone of (customer.phones || [])" >
+                    <p title="{{phone.name}}">
+                      <small>
+                      {{phone.number}}
+                      <fa-icon [icon]="phoneIcon"></fa-icon>
+                      </small>
+                    </p>
+                </ng-container>
+              </td>
+              <td>
+                <ng-container *ngFor="let address of (customer.addresses || [])" >
+                  <p>
+                    <small title="{{address.name}} - {{address.zipCode}}">
+                      {{address.street}}, {{address.number}}
+                    </small>
+                  </p>
+                </ng-container>
+              </td>
               <td>
                 <ng-container *ngFor="let site of (customer.sites || [])" >
                   <app-url [url]="site.url"></app-url>
@@ -61,7 +78,8 @@ import { PageItem, PaginationModel } from './pagination';
               </td>
               <td>
                 <a class="nav-link text-dark" [routerLink]="['/customer/edit', customer.id ]">
-                  Customer
+                  <fa-icon [icon]="editIcon"></fa-icon>
+                  <span class="sr-only">Edit</span>
                 </a>
               </td>
           </tr>
@@ -84,7 +102,9 @@ export class CustomerListComponent implements OnInit, OnDestroy {
 
   public customerPage$: Observable<Page<Customer>>;
   public addIcon = faPlus;
+  public editIcon = faPen;
   public searchIcon = faSearch;
+  public phoneIcon = faPhone;
 
   public paginationModel: PaginationModel = new PaginationModel(10);
 
