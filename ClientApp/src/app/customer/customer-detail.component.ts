@@ -38,7 +38,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
 
 
   public customer: Partial<Customer>;
-  public customerForm: FormGroup = this.formService.customerForm();
+  public customerForm: FormGroup = null;
 
   private subscription: Subscription;
 

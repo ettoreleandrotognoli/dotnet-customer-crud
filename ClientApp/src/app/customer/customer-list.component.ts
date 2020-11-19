@@ -1,10 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CustomerService, CUSTOMER_SERVICE, Customer, Address, Page, Pagination, Search } from '.';
 import { faPlus, faSearch, faPen, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { interval, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
-import { debounce, tap, map } from 'rxjs/operators';
+import { interval, Observable, ReplaySubject, Subject, Subscription, throwError } from 'rxjs';
+import { debounce, tap, map, catchError } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageItem, PaginationModel } from './pagination';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-customer-list',
@@ -125,7 +126,8 @@ export class CustomerListComponent implements OnInit, OnDestroy {
     @Inject(CUSTOMER_SERVICE)
     private service: CustomerService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     this.searchSubject.asObservable().subscribe(it => this.searchString = it);
     this.searchSubject.asObservable().pipe(
@@ -143,8 +145,13 @@ export class CustomerListComponent implements OnInit, OnDestroy {
     this.subscription = this.route.queryParams.pipe(
       tap(queryParams => this.parseQueryParams(queryParams)),
       map(queryParams => this.serviceParams(queryParams)),
-      tap(serviceParams => this.customerPage$ = this.service.searchPage(serviceParams)),
+      tap(serviceParams => this.customerPage$ = this.service.searchPage(serviceParams).pipe(catchError(error => this.catchError(error)))),
     ).subscribe();
+  }
+
+  catchError(error) {
+    this.toastr.error('Sorry about that 😕', `Error during: Load Customers `);
+    return throwError(error);
   }
 
   ngOnDestroy() {
