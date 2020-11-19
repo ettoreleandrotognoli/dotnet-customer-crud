@@ -41,7 +41,7 @@ export class CustomerFormService {
     return this.formBuilder.group({
       id: [initialData.id],
       name: [initialData.name, [Validators.required]],
-      birthday: [initialData.birthday, []],
+      birthday: [(initialData.birthday || '').split('T')[0], []],
       cpf: [initialData.cpf, [this.validatorService.cpf()]],
       rg: [initialData.rg, []],
       sites: this.formBuilder.array(
