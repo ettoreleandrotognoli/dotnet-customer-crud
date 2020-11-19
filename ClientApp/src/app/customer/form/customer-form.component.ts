@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { CustomerFormService } from './customer-form.service';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { BaseFormComponent } from './base-form-component';
 
 
 @Component({
@@ -10,19 +11,45 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
     <div [formGroup]="formGroup" class="form-row">
       <div class="form-group col-md-8">
         <label for="{{prefix}}name"> Name:</label>
-        <input id="{{prefix}}name" class="form-control" type="text" formControlName="name" required>
+        <input
+          id="{{prefix}}name"
+          class="form-control"
+          type="text"
+          formControlName="name"
+          [ngClass]="inputFeedback('name')" >
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+          <div class="invalid-feedback">
+            You must agree before submitting.
+          </div>
       </div>
       <div class="form-group col-md-4">
         <label for="{{prefix}}birthday">Birthday:</label>
-        <input id="{{prefix}}birthday" class="form-control" type="text" formControlName="birthday" required>
+        <input
+          id="{{prefix}}birthday"
+          class="form-control"
+          type="date"
+          formControlName="birthday"
+          [ngClass]="inputFeedback('birthday')" >
       </div>
       <div class="form-group col-md-6">
         <label for="{{prefix}}cpf">CPF:</label>
-        <input id="{{prefix}}cpf" class="form-control" type="text" formControlName="cpf" required>
+        <input
+          id="{{prefix}}cpf"
+          class="form-control"
+          type="text"
+          formControlName="cpf"
+          [ngClass]="inputFeedback('cpf')" >
       </div>
       <div class="form-group col-md-6">
         <label for="{{prefix}}rg">RG:</label>
-        <input id="{{prefix}}rg" class="form-control" type="text" formControlName="rg" required>
+        <input
+          id="{{prefix}}rg"
+          class="form-control"
+          type="text"
+          formControlName="rg"
+          [ngClass]="inputFeedback('rg')" >
       </div>
       <div class="col-12" formArrayName="phones">
         <h2>
@@ -90,13 +117,10 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
       </div>
     </div>`
 })
-export class CustomerFormComponent {
+export class CustomerFormComponent extends BaseFormComponent {
 
   @Input()
   public prefix = '';
-
-  @Input()
-  public formGroup: FormGroup;
 
   public removeIcon = faTimes;
   public addIcon = faPlus;
@@ -104,38 +128,36 @@ export class CustomerFormComponent {
   constructor(
     private formService: CustomerFormService
   ) {
+    super();
+  }
 
+  public addPhone() {
+    this.phones.insert(0, this.formService.phoneForm());
+  }
+
+  public removePhone(index: number) {
+    this.phones.removeAt(index);
+  }
+
+  public addAddress() {
+    this.addresses.insert(0, this.formService.addressForm());
+  }
+
+  public removeAddress(index: number) {
+    this.addresses.removeAt(index);
+  }
+
+  public addSite() {
+    this.sites.insert(0, this.formService.siteForm());
+  }
+
+  public removeSite(index: number) {
+    this.sites.removeAt(index);
   }
 
   get phones(): FormArray {
     return this.formGroup.get('phones') as FormArray;
   }
-
-  public addPhone() {
-    this.phones.controls.splice(0, 0, this.formService.phoneForm());
-  }
-
-  public removePhone(index: number) {
-    this.phones.controls.splice(index, 1);
-  }
-
-  public addAddress() {
-    this.addresses.controls.splice(0, 0, this.formService.addressForm());
-  }
-
-  public removeAddress(index: number) {
-    this.addresses.controls.splice(index, 1);
-  }
-
-  public addSite() {
-    this.sites.controls.splice(0, 0, this.formService.siteForm());
-  }
-
-  public removeSite(index: number) {
-    this.sites.controls.splice(index, 1);
-  }
-
-
 
   get sites(): FormArray {
     return this.formGroup.get('sites') as FormArray;

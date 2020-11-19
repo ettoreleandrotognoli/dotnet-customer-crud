@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component } from '@angular/core';
+import { BaseFormComponent } from './base-form-component';
 
 @Component({
   selector: 'app-customer-site-form',
@@ -11,18 +11,18 @@ import { FormGroup } from '@angular/forms';
           <div class="input-group-prepend">
             <ng-content></ng-content>
           </div>
-          <input id="{{prefix}}url" class="form-control" formControlName='url' type='text' >
+          <input
+            id="{{prefix}}url"
+            type="text"
+            class="form-control"
+            formControlName="url"
+            [ngClass]="inputFeedback('url')">
         </div>
       </div>
     </div>
   `
 })
-export class CustomerSiteFormComponent {
+export class CustomerSiteFormComponent extends BaseFormComponent {
 
-  @Input()
-  public prefix = '';
-
-  @Input()
-  public formGroup: FormGroup;
 
 }

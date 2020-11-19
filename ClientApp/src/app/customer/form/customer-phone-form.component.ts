@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BaseFormComponent } from './base-form-component';
 
 export interface CustomerPhoneFormOptions {
   number: { formGroup: any };
@@ -21,25 +22,29 @@ export const DEFAULT_OPTIONS: CustomerPhoneFormOptions = {
             <div class="input-group-prepend">
               <ng-content></ng-content>
             </div>
-            <input id="{{prefix}}number" class="form-control" formControlName="number" type="text" >
+            <input
+              id="{{prefix}}number"
+              type="text"
+              class="form-control"
+              formControlName="number"
+              [ngClass]="inputFeedback('number')" >
         </div>
       </div>
       <div class="form-group" [ngClass]="options.name.formGroup">
         <label for="{{prefix}}name">Name/Description:</label>
-        <input id="{{prefix}}name" class="form-control" formControlName="name" type="text" >
+        <input
+          id="{{prefix}}name"
+          type="text"
+          class="form-control"
+          formControlName="name"
+          [ngClass]="inputFeedback('name')" >
       </div>
   </div>
   `
 })
-export class CustomerPhoneFormComponent {
+export class CustomerPhoneFormComponent extends BaseFormComponent {
 
   @Input()
   public options: CustomerPhoneFormOptions = DEFAULT_OPTIONS;
-
-  @Input()
-  public prefix = '';
-
-  @Input()
-  public formGroup: FormGroup;
 
 }

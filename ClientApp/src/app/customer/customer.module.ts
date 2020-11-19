@@ -16,6 +16,7 @@ import { CustomerSiteFormComponent } from './form/customer-site-form.component';
 import { CustomerAddressFormComponent } from './form/customer-address-form.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { HttpCustomerService } from './http-customer.service';
+import { ValidatorService } from './form/validator.service';
 
 const COMPONENTS = [
   PaginationComponent,
@@ -43,13 +44,14 @@ const COMPONENTS = [
     ...COMPONENTS
   ],
   providers: [
+    ValidatorService,
     MockCustomerService,
     CustomerFormService,
   ],
 })
 export class CustomerModule {
 
-  public static forRoot(options: Partial<CustomerModuleOptions>): ModuleWithProviders {
+  public static forRoot(options: Partial<CustomerModuleOptions> = {}): ModuleWithProviders {
     const finalOptions = { ...DEFAULT_CUSTOMER_MODULE_OPTIONS, ...options };
     return {
       ngModule: CustomerModule,
