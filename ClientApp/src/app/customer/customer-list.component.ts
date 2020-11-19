@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { CustomerService, CUSTOMER_SERVICE, Customer, Page, Pagination, Search } from '.';
+import { CustomerService, CUSTOMER_SERVICE, Customer, Address, Page, Pagination, Search } from '.';
 import { faPlus, faSearch, faPen, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { interval, Observable, ReplaySubject, Subject, Subscription } from 'rxjs';
 import { debounce, tap, map } from 'rxjs/operators';
@@ -54,20 +54,24 @@ import { PageItem, PaginationModel } from './pagination';
               <td> {{ customer.birthday | date }}</td>
               <td>
                 <ng-container *ngFor="let phone of (customer.phones || [])" >
-                    <p title="{{phone.name}}">
+                  <p>
+                    <a class="text-dark" href="tel:{{phone.number}}" title="{{phone.name}}">
                       <small>
                       {{phone.number}}
                       <fa-icon [icon]="phoneIcon"></fa-icon>
                       </small>
-                    </p>
+                    </a>
+                  </p>
                 </ng-container>
               </td>
               <td>
                 <ng-container *ngFor="let address of (customer.addresses || [])" >
                   <p>
-                    <small title="{{address.name}} - {{address.zipCode}}">
-                      {{address.street}}, {{address.number}}
-                    </small>
+                    <a class="text-dark" [href]="addressLink(address)" target="_blank">
+                      <small title="{{address.name}} - {{address.zipCode}}">
+                        {{address.street}}, {{address.number}}
+                      </small>
+                    </a>
                   </p>
                 </ng-container>
               </td>
@@ -171,6 +175,10 @@ export class CustomerListComponent implements OnInit, OnDestroy {
     return (pageItem: PageItem) => {
       return this.mergeQueryParams({ [this.pageParamName]: pageItem.number });
     };
+  }
+
+  addressLink(address: Address) {
+    return `https://google.com/maps/search/${address.street}, ${address.number} ${address.zipCode}`;
   }
 
 }
