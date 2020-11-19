@@ -16,8 +16,9 @@ export const DEFAULT_OPTIONS: CustomerPhoneFormOptions = {
   selector: 'app-customer-phone-form',
   template: `
   <div class="form-row" [formGroup]="formGroup">
-      <div class="form-group" [ngClass]="options.number.formGroup">
+      <div class="form-group">
         <label for="{{prefix}}number">Number: </label>
+        <app-input-feedback [control]="formGroup.get('number')">
         <div class="input-group">
             <div class="input-group-prepend">
               <ng-content></ng-content>
@@ -26,18 +27,21 @@ export const DEFAULT_OPTIONS: CustomerPhoneFormOptions = {
               id="{{prefix}}number"
               type="text"
               class="form-control"
-              formControlName="number"
-              [ngClass]="inputFeedback('number')" >
+              [ngClass]="inputFeedback('number')"
+              formControlName="number">
         </div>
+        </app-input-feedback>
       </div>
       <div class="form-group" [ngClass]="options.name.formGroup">
         <label for="{{prefix}}name">Name/Description:</label>
+        <app-input-feedback [control]="formGroup.get('name')">
         <input
           id="{{prefix}}name"
           type="text"
           class="form-control"
           formControlName="name"
           [ngClass]="inputFeedback('name')" >
+        </app-input-feedback>
       </div>
   </div>
   `

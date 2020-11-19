@@ -1,18 +1,17 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { CustomerService, CUSTOMER_SERVICE, Customer } from '.';
-import { defer, EMPTY, Observable, of, Subscription } from 'rxjs';
+import { defer, EMPTY, Observable, of, Subscription, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, mergeMap, tap, delay } from 'rxjs/operators';
+import { map, mergeMap, tap, delay, timeout, catchError } from 'rxjs/operators';
 import { CustomerFormService } from './form/customer-form.service';
 import { FormGroup } from '@angular/forms';
+import { applyErrors, ValidationError } from './form/base-form-component';
 
 @Component({
   selector: 'app-customer-detail',
   template: `
     <ng-container *ngIf="customerForm !== null; else loading">
       <h2 *ngIf="customer">Customer: {{ customer.name || 'New'}}</h2>
-      {{ customerForm.status }}
-      {{ customerForm.errors | json }}
       <form [formGroup]="customerForm" (ngSubmit)="save()">
         <app-customer-form [formGroup]="customerForm"></app-customer-form>
         <div class="float-right">
@@ -68,11 +67,21 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
   public loading<T>(): (source: Observable<T>) => Observable<Partial<Customer>> {
     return (source: Observable<T>): Observable<Partial<Customer>> => {
       return source.pipe(
+        catchError(error => this.catchValidationError(error)),
         tap(() => { }, console.error, () => this.router.navigate(this.successRoute)),
         map(() => this.getCustomer()),
       );
     };
   }
+
+  public catchValidationError(error: any) {
+    if (!(error instanceof ValidationError)) {
+      return throwError(error);
+    }
+    applyErrors(this.customerForm, error.errors);
+    return throwError(error);
+  }
+
 
   public save() {
     const customer = this.getCustomer();

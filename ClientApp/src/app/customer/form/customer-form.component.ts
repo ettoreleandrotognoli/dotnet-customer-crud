@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 import { CustomerFormService } from './customer-form.service';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { BaseFormComponent } from './base-form-component';
@@ -11,45 +11,47 @@ import { BaseFormComponent } from './base-form-component';
     <div [formGroup]="formGroup" class="form-row">
       <div class="form-group col-md-8">
         <label for="{{prefix}}name"> Name:</label>
-        <input
-          id="{{prefix}}name"
-          class="form-control"
-          type="text"
-          formControlName="name"
-          [ngClass]="inputFeedback('name')" >
-          <div class="valid-feedback">
-            Looks good!
-          </div>
-          <div class="invalid-feedback">
-            You must agree before submitting.
-          </div>
+        <app-input-feedback [control]="formGroup.get('name')">
+          <input
+            id="{{prefix}}name"
+            class="form-control"
+            type="text"
+            formControlName="name"
+            [ngClass]="inputFeedback('name')" >
+        </app-input-feedback>
       </div>
       <div class="form-group col-md-4">
         <label for="{{prefix}}birthday">Birthday:</label>
+        <app-input-feedback [control]="formGroup.get('birthday')">
         <input
           id="{{prefix}}birthday"
           class="form-control"
           type="date"
           formControlName="birthday"
           [ngClass]="inputFeedback('birthday')" >
+        </app-input-feedback>
       </div>
       <div class="form-group col-md-6">
         <label for="{{prefix}}cpf">CPF:</label>
+        <app-input-feedback valid="Looks good!" [control]="formGroup.get('cpf')">
         <input
           id="{{prefix}}cpf"
           class="form-control"
           type="text"
           formControlName="cpf"
           [ngClass]="inputFeedback('cpf')" >
+        </app-input-feedback>
       </div>
       <div class="form-group col-md-6">
         <label for="{{prefix}}rg">RG:</label>
+        <app-input-feedback [control]="formGroup.get('rg')">
         <input
           id="{{prefix}}rg"
           class="form-control"
           type="text"
           formControlName="rg"
           [ngClass]="inputFeedback('rg')" >
+        </app-input-feedback>
       </div>
       <div class="col-12" formArrayName="phones">
         <h2>
@@ -153,6 +155,11 @@ export class CustomerFormComponent extends BaseFormComponent {
 
   public removeSite(index: number) {
     this.sites.removeAt(index);
+  }
+
+
+  get name(): AbstractControl {
+    return this.formGroup.get('name');
   }
 
   get phones(): FormArray {

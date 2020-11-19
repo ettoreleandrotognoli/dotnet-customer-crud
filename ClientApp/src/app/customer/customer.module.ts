@@ -18,8 +18,12 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { HttpCustomerService } from './http-customer.service';
 import { ValidatorService } from './form/validator.service';
 import { UrlComponent } from './url.component';
+import { ErrorFeedbackComponent } from './form/error-feedback.component';
+import { InputFeedbackComponent } from './form/input-feedback.component';
 
 const COMPONENTS = [
+  ErrorFeedbackComponent,
+  InputFeedbackComponent,
   UrlComponent,
   PaginationComponent,
   CustomerAddressFormComponent,

@@ -7,6 +7,7 @@ import { BaseFormComponent } from './base-form-component';
     <div class="form-row" [formGroup]='formGroup'>
       <div class="form-group col-md-6">
         <label for="{{prefix}}url">URL:</label>
+        <app-input-feedback [control]="formGroup.get('url')">
         <div class="input-group">
           <div class="input-group-prepend">
             <ng-content></ng-content>
@@ -18,6 +19,7 @@ import { BaseFormComponent } from './base-form-component';
             formControlName="url"
             [ngClass]="inputFeedback('url')">
         </div>
+        </app-input-feedback>
       </div>
     </div>
   `

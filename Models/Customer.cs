@@ -38,8 +38,8 @@ namespace CustomerApp.Models
         [BsonElement("Name")]
         public string Name { get; set; }
 
-      [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
-        public DateTime birthday { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime? birthday { get; set; }
 
         public string Cpf { get; set; }
 
