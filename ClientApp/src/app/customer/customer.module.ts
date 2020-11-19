@@ -17,8 +17,10 @@ import { CustomerAddressFormComponent } from './form/customer-address-form.compo
 import { PaginationComponent } from './pagination/pagination.component';
 import { HttpCustomerService } from './http-customer.service';
 import { ValidatorService } from './form/validator.service';
+import { UrlComponent } from './url.component';
 
 const COMPONENTS = [
+  UrlComponent,
   PaginationComponent,
   CustomerAddressFormComponent,
   CustomerSiteFormComponent,

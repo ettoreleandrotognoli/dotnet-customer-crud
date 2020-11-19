@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidatorFn, ValidationErrors, Validators } from '@angular/forms';
 import { cpf } from 'cpf-cnpj-validator';
 @Injectable()
 export class ValidatorService {
@@ -19,6 +19,10 @@ export class ValidatorService {
       }
       return null;
     };
+  }
+
+  url(): ValidatorFn {
+    return Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?');
   }
 
 }

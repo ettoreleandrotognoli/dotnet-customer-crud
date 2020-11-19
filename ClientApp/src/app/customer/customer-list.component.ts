@@ -54,7 +54,11 @@ import { PageItem, PaginationModel } from './pagination';
               <td> {{ customer.birthday }}</td>
               <td> {{ customer.phones }}</td>
               <td> {{ customer.addresses }}</td>
-              <td> {{ customer.sites }}</td>
+              <td>
+                <ng-container *ngFor="let site of (customer.sites || [])" >
+                  <app-url [url]="site.url"></app-url>
+                </ng-container>
+              </td>
               <td>
                 <a class="nav-link text-dark" [routerLink]="['/customer/edit', customer.id ]">
                   Customer

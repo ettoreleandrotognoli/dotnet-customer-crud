@@ -32,7 +32,7 @@ export class CustomerFormService {
 
   public siteForm(initialData: Partial<Site> = {}): FormGroup {
     return this.formBuilder.group({
-      url: [initialData.url, [Validators.required]],
+      url: [initialData.url, [Validators.required, this.validatorService.url()]],
     });
   }
 
