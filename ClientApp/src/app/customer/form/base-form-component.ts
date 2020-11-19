@@ -8,6 +8,7 @@ export interface FormErrors {
 
 export class ValidationError {
   constructor(
+    public title: string,
     public errors: FormErrors,
     public httpError: HttpErrorResponse
   ) {

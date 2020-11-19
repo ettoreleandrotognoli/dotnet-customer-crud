@@ -6,6 +6,8 @@ import { map, mergeMap, tap, delay, timeout, catchError } from 'rxjs/operators';
 import { CustomerFormService } from './form/customer-form.service';
 import { FormGroup } from '@angular/forms';
 import { applyErrors, ValidationError } from './form/base-form-component';
+import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-customer-detail',
@@ -48,6 +50,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     private service: CustomerService,
     private formService: CustomerFormService,
     private router: Router,
+    private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
     @Optional()
     private route?: ActivatedRoute,
@@ -64,21 +67,42 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
     this.customerForm = this.formService.customerForm(customer);
   }
 
-  public loading<T>(): (source: Observable<T>) => Observable<Partial<Customer>> {
-    return (source: Observable<T>): Observable<Partial<Customer>> => {
+  public loading<T>(operation: string): (source: Observable<T>) => Observable<void> {
+    return (source: Observable<T>): Observable<void> => {
       return source.pipe(
-        catchError(error => this.catchValidationError(error)),
-        tap(() => { }, console.error, () => this.router.navigate(this.successRoute)),
-        map(() => this.getCustomer()),
+        catchError(error => this.catchOperationError(error, operation)),
+        tap(
+          () => { },
+          () => { },
+          () => this.toastr.success(`${operation} was succeed 😊`, 'Success')
+        ),
+        tap(
+          () => { },
+          () => { },
+          () => this.router.navigate(this.successRoute)
+        ),
+        map(_ => null)
       );
     };
   }
 
-  public catchValidationError(error: any) {
+  public catchOperationError(error: any, operation: string) {
     if (!(error instanceof ValidationError)) {
+      this.toastr.error('Sorry about that 😕', `Error during: ${operation} `);
       return throwError(error);
     }
+    this.toastr.error(error.title, `Error during: ${operation} `);
     applyErrors(this.customerForm, error.errors);
+    return throwError(error);
+  }
+
+  public catchLoadError(error: any): Observable<never> {
+    if (error instanceof HttpErrorResponse && error.status === 404) {
+      this.toastr.error('How did you get there? 🤔', 'Customer not found');
+    } else {
+      this.toastr.error('Sorry about that 😕', `Error during: Load Customer `);
+    }
+    this.router.navigate(this.successRoute);
     return throwError(error);
   }
 
@@ -86,13 +110,13 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
   public save() {
     const customer = this.getCustomer();
     this.service.save(customer).pipe(
-      this.loading(),
+      this.loading('Save User'),
     ).subscribe();
   }
 
   public remove() {
     this.service.remove({ id: this.id }).pipe(
-      this.loading(),
+      this.loading('Remove User'),
     ).subscribe();
   }
 
@@ -101,6 +125,7 @@ export class CustomerDetailComponent implements OnInit, OnDestroy {
       map(params => params['id'] || this.id),
       tap(id => this.id = id),
       mergeMap(id => (id ? this.service.get(id) : this.route.params)),
+      catchError(error => this.catchLoadError(error)),
       tap(customer => this.setCustomer(customer)),
     ).subscribe();
   }

@@ -12,7 +12,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "8.2.12",
+    "@angular/animations": "^8.2.12",
     "@angular/common": "8.2.12",
     "@angular/compiler": "8.2.12",
     "@angular/core": "8.2.12",
@@ -34,6 +34,7 @@
     "jquery": "3.4.1",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
+    "ngx-toastr": "^10.2.0",
     "oidc-client": "^1.9.1",
     "popper.js": "^1.16.0",
     "rxjs": "^6.5.3",

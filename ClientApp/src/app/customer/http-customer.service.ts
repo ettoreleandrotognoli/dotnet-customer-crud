@@ -75,7 +75,7 @@ export class HttpCustomerService implements CustomerService {
         Object.assign(value, { [errorMessage]: true });
       }
     }
-    return throwError(new ValidationError(errors, httpError));
+    return throwError(new ValidationError(httpError.error.title, errors, httpError));
   }
 
 

@@ -20,6 +20,7 @@ import { ValidatorService } from './form/validator.service';
 import { UrlComponent } from './url.component';
 import { ErrorFeedbackComponent } from './form/error-feedback.component';
 import { InputFeedbackComponent } from './form/input-feedback.component';
+import { ToastrModule } from 'ngx-toastr';
 
 const COMPONENTS = [
   ErrorFeedbackComponent,
@@ -41,6 +42,7 @@ const COMPONENTS = [
   ],
   imports: [
     CommonModule,
+    ToastrModule,
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
