@@ -3,9 +3,24 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
+using FluentValidation;
 
 namespace CustomerApp.Services
 {
+
+    public class AddressValidator : AbstractValidator<Address>{
+        public AddressValidator() {
+            RuleFor( address => address.ZipCode).NotEmpty();
+        }
+    }
+
+    public class CustomerValidator : AbstractValidator<Customer> {
+        public CustomerValidator() {
+            RuleFor( customer => customer.Name).NotEmpty();
+            RuleForEach( customer => customer.Addresses).SetValidator(new AddressValidator());
+        }
+    }
+
     public class CustomerService
     {
         private readonly IMongoCollection<Customer> _Customers;
@@ -34,10 +49,12 @@ namespace CustomerApp.Services
         public Customer Get(string id) =>
             _Customers.Find<Customer>(Customer => Customer.Id == id).FirstOrDefault();
 
-        public Customer Create(Customer Customer)
+        public Customer Create(Customer customer)
         {
-            _Customers.InsertOne(Customer);
-            return Customer;
+            var validator = new CustomerValidator();
+            var results = validator.Validate(customer, options => options.ThrowOnFailures());
+            _Customers.InsertOne(customer);
+            return customer;
         }
 
         public void Update(string id, Customer CustomerIn) =>

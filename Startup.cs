@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using CustomerApp.Models;
 using CustomerApp.Services;
+using CustomerApp.Http;
 
 namespace CustomerApp
 {
@@ -32,7 +33,8 @@ namespace CustomerApp
 
             services.AddSingleton<CustomerService>();
 
-            services.AddControllers();
+            services.AddControllers( options =>
+                options.Filters.Add( new HttpResponseExceptionFilter() ));
 
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
