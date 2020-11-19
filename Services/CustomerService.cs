@@ -10,7 +10,21 @@ namespace CustomerApp.Services
 
     public class AddressValidator : AbstractValidator<Address>{
         public AddressValidator() {
+            RuleFor( address => address.Number).NotEmpty();
+            RuleFor( address => address.Street).NotEmpty();
             RuleFor( address => address.ZipCode).NotEmpty();
+        }
+    }
+
+    public class SiteValidator : AbstractValidator<Site>{
+        public SiteValidator() {
+            RuleFor( site => site.Url).NotEmpty();
+        }
+    }
+
+     public class PhoneValidator : AbstractValidator<Phone>{
+        public PhoneValidator() {
+            RuleFor( phone => phone.Number).NotEmpty();
         }
     }
 
@@ -18,6 +32,8 @@ namespace CustomerApp.Services
         public CustomerValidator() {
             RuleFor( customer => customer.Name).NotEmpty();
             RuleForEach( customer => customer.Addresses).SetValidator(new AddressValidator());
+            RuleForEach( customer => customer.Phones).SetValidator(new PhoneValidator());
+            RuleForEach( customer => customer.Sites).SetValidator(new SiteValidator());
         }
     }
 
@@ -57,8 +73,11 @@ namespace CustomerApp.Services
             return customer;
         }
 
-        public void Update(string id, Customer CustomerIn) =>
-            _Customers.ReplaceOne(Customer => Customer.Id == id, CustomerIn);
+        public void Update(string id, Customer customerIn) {
+            var validator = new CustomerValidator();
+            var results = validator.Validate(customerIn, options => options.ThrowOnFailures());
+            _Customers.ReplaceOne(Customer => Customer.Id == id, customerIn);
+        }
 
         public void Remove(Customer CustomerIn) =>
             _Customers.DeleteOne(Customer => Customer.Id == CustomerIn.Id);
